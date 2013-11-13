@@ -16,10 +16,10 @@ module.exports = D.Widget.extend({
     },
     initStructure: function() {
         this.$ = D.fromJSON([
-            'li', [
+            'div', {
+                'class':'col-md-2'
+            }, [
                 ['p', [
-                    ['strong', ['Name:']],
-                    ' ',
                     ['span', {
                         'ui:asset': 'name'
                     }],
