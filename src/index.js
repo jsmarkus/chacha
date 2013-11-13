@@ -1,56 +1,60 @@
 var P = require('./pouchdb');
+var ListWidget = require('./list-widget');
 var async = require('async');
+var ItemCollection = require('./item-collection');
+var CollectionAdapter = require('./collection-adapter');
 
 // var trans = new P('transactions');
 
-var db;
+var db, collAdapter, itemCollection = new ItemCollection();
+
+window.debug = {};
+window.debug.col = itemCollection;
+
+var view = new ListWidget();
+document.body.appendChild(view.domify());
+
+function showAllObjects() {
+    var opts = {
+        include_docs: true
+    };
+    db.allDocs(opts, function(err, res) {
+        view.clear();
+        res.rows.forEach(function(row) {
+            var doc = row.doc;
+            console.log(doc);
+            view.add(doc);
+        });
+    });
+}
+
 
 async.series([
     function(next) {
-        P.destroy('transactions', next);
+        P.destroy('transactions', next)
     },
     function(next) {
         db = new P('transactions');
-        next();
+        collAdapter = new CollectionAdapter(db, itemCollection);
+        db.info(next);
     },
     function(next) {
         db.bulkDocs({
             docs: [{
-                _id: '234324',
-                from: '12',
-                to: '500',
-                quantity: 78,
-                obj: 'pens'
-            },{
-                _id: '234325',
-                from: '500',
-                to: '17',
-                quantity: 5,
-                obj: 'pens'
+                type: 'item',
+                name: 'Book'
+            }, {
+                type: 'item',
+                name: 'Table'
             }]
         }, next);
     },
-    function (next) {
-        // db.replicate.to('_https://jsman.iriscouch.com/transactions/', {
-        db.replicate.to('http://127.0.0.1:5984/transactions/', {
-            onComplete : function () {
-                console.log('complete', arguments);
-                next();
-            }
-        });
+    function(next) {
+        showAllObjects();
     }
-], function(err) {
-    if (err) {
-        console.log('error:', err);
+], function (err) {
+    if(!err) {
         return;
     }
-    console.log('ok');
+    console.log('Error:', err);
 });
-
-// trans.put({
-//     _id : '346329462934',
-//     obj : 'doc111',
-//     src : 'store',
-//     dst : 'mark',
-//     quantity : 234
-// });
