@@ -3,6 +3,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     dirTmp: '.tmp/',
+    dirResourcesTmp: 'tmp/resources/',
     dirRelease: 'build/release/',
     dirDebug: 'build/debug/',
 
@@ -15,8 +16,7 @@ module.exports = function(grunt) {
     },
 
     browserify: {
-      options: {
-      },
+      options: {},
       dev: {
         files: {
           '<%= dirDebug %>app.js': 'src/index.js'
@@ -33,7 +33,27 @@ module.exports = function(grunt) {
       }
     },
 
+    dcl_resources: {
+      dev: {
+        options: {
+          entry: './src/index.js',
+          dir: '<%= dirResourcesTmp %>'
+        }
+      }
+    },
 
+    less: {
+      options: {
+        strictMath: false,
+        report: 'min',
+        paths: ['.']
+      },
+      dev: {
+        files: {
+          '<%= dirDebug %>/style.css': '<%= dirResourcesTmp %>/imports.less'
+        }
+      }
+    },
 
     watch: {
       dev: {
@@ -42,7 +62,9 @@ module.exports = function(grunt) {
           './src/**/*.js'
         ],
         tasks: [
-          'browserify:dev'
+          'browserify:dev',
+          'dcl_resources:dev',
+          'less:dev'
         ],
         options: {
           livereload: true,
@@ -52,14 +74,12 @@ module.exports = function(grunt) {
       }
     },
 
-
-
-
     connect: {
       dev: {
         options: {
           port: 3000,
-          base: '.'
+          base: '.',
+          livereload: true
         }
       }
     }
@@ -71,6 +91,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-less');
+  grunt.loadNpmTasks('grunt-dcl-resources');
 
   grunt.registerTask('debug', [
     'browserify:dev'
