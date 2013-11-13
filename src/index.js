@@ -1,10 +1,12 @@
+var BB = require('backbone');
+var $ = require('br-jquery');
 var P = require('./pouchdb');
 var ListWidget = require('./list-widget');
 var async = require('async');
 var ItemCollection = require('./item-collection');
 var CollectionAdapter = require('./collection-adapter');
 var DualBackboneCollectionAdapter = require('dual/lib/adapter/BackboneCollection');
-
+BB.$ = $;
 // var trans = new P('transactions');
 
 var db,
@@ -54,3 +56,26 @@ async.series([
     }
     console.log('Error:', err);
 });
+
+
+var Router = BB.Router.extend({
+    routes : {
+        'items/:id' : 'itemDetails',
+        'items' : 'itemList'
+    }
+});
+var router = new Router();
+
+router.on('all', function () {
+    console.log('route', arguments);
+});
+
+router.on('route:itemDetails', function (id) {
+    console.log('route:itemDetails', id);
+});
+
+router.on('route:itemList', function () {
+    console.log('route:itemList');
+});
+
+BB.history.start();

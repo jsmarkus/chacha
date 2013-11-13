@@ -19,6 +19,7 @@
     "dcl-bootstrap": "0.0.4",
     "backbone": "~1.1.0",
     "boop": "0.0.1",
-    "underscore": "~1.5.2"
+    "underscore": "~1.5.2",
+    "br-jquery": "0.0.3"
   }
 }

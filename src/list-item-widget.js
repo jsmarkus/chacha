@@ -17,19 +17,19 @@ module.exports = D.Widget.extend({
     initStructure: function() {
         this.$ = D.fromJSON([
             'div', {
-                'class':'col-md-2'
-            }, [
+                'class': 'col-md-2'
+            },
+            [
                 ['p', [
-                    ['span', {
+                    ['a', {
                         'ui:asset': 'name'
                     }],
                     ['input', {
-                        type:'text',
-                        class:'hidden',
+                        type: 'text',
+                        class: 'hidden',
                         'ui:asset': 'editName'
                     }],
-                    ' ',
-                    ['a', {
+                    ' ', ['a', {
                             'ui:asset': 'deleteAction',
                             'href': 'javascript:void(0)'
                         },
@@ -40,25 +40,30 @@ module.exports = D.Widget.extend({
         ]);
     },
 
-    applyAttribute_isEdit: function(value) {
-        if (value) {
-            this.assets.name.addClass('hidden');
-            this.assets.editName.removeClass('hidden');
-            return;
-        }
-        this.assets.editName.addClass('hidden');
-        this.assets.name.removeClass('hidden');
+    // applyAttribute_isEdit: function(value) {
+    //     if (value) {
+    //         this.assets.name.addClass('hidden');
+    //         this.assets.editName.removeClass('hidden');
+    //         return;
+    //     }
+    //     this.assets.editName.addClass('hidden');
+    //     this.assets.name.removeClass('hidden');
+    // },
+
+    applyAttribute__id: function(value) {
+        var href = '#items/' + value;
+        this.assets.name.setAttribute('href', href);
     },
 
     ready: function() {
-        this.assets.editName.listenTo('blur');
-        this.assets.name.listenTo('click');
-        this.assets.name.on('dom.click', function() {
-            this.setIsEdit(true);
-        }.bind(this));
-        this.assets.editName.on('dom.blur', function() {
-            this.setIsEdit(false);
-        }.bind(this));
+        // this.assets.editName.listenTo('blur');
+        // this.assets.name.listenTo('click');
+        // this.assets.name.on('dom.click', function() {
+        //     this.setIsEdit(true);
+        // }.bind(this));
+        // this.assets.editName.on('dom.blur', function() {
+        //     this.setIsEdit(false);
+        // }.bind(this));
 
         this.assets.deleteAction.listenTo('click');
         this.assets.deleteAction.on('dom.click', function() {
