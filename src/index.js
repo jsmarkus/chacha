@@ -3,31 +3,24 @@ var ListWidget = require('./list-widget');
 var async = require('async');
 var ItemCollection = require('./item-collection');
 var CollectionAdapter = require('./collection-adapter');
+var DualBackboneCollectionAdapter = require('dual/lib/adapter/BackboneCollection');
 
 // var trans = new P('transactions');
 
-var db, collAdapter, itemCollection = new ItemCollection();
+var db,
+    collAdapter,
+    itemCollection = new ItemCollection(),
+    listView = new ListWidget(),
+    listAdapter = new DualBackboneCollectionAdapter(itemCollection, listView);
+
+listView.on('delete', function (id) {
+    itemCollection.get(id).destroy({wait:true});
+});
 
 window.debug = {};
 window.debug.col = itemCollection;
 
-var view = new ListWidget();
-document.body.appendChild(view.domify());
-
-function showAllObjects() {
-    var opts = {
-        include_docs: true
-    };
-    db.allDocs(opts, function(err, res) {
-        view.clear();
-        res.rows.forEach(function(row) {
-            var doc = row.doc;
-            console.log(doc);
-            view.add(doc);
-        });
-    });
-}
-
+document.body.appendChild(listView.domify());
 
 async.series([
     function(next) {
@@ -42,18 +35,21 @@ async.series([
         db.bulkDocs({
             docs: [{
                 type: 'item',
-                name: 'Book'
+                name: 'Alice Passport'
             }, {
                 type: 'item',
-                name: 'Table'
+                name: 'Bob Passport'
+            }, {
+                type: 'item',
+                name: 'Alice Driving License'
+            }, {
+                type: 'item',
+                name: 'Bob Driving License'
             }]
         }, next);
-    },
-    function(next) {
-        showAllObjects();
     }
-], function (err) {
-    if(!err) {
+], function(err) {
+    if (!err) {
         return;
     }
     console.log('Error:', err);

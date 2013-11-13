@@ -9,7 +9,8 @@ module.exports = D.Widget.extend({
         },
         isEdit: {
             init: false
-        }
+        },
+        _id: {}
     },
     initStructure: function() {
         this.$ = D.fromJSON([
@@ -18,14 +19,20 @@ module.exports = D.Widget.extend({
                     ['strong', ['Name:']],
                     ' ', ['span', {
                         'ui:asset': 'name'
-                    }]
+                    }],
+                    ['a', {
+                            'ui:asset': 'deleteAction',
+                            'href': 'javascript:void(0)'
+                        },
+                        ['Delete']
+                    ]
                 ]]
             ]
         ]);
     },
 
     applyAttribute_isEdit: function(value) {
-        if(value) {
+        if (value) {
             this.assets.name.addClass('hidden');
             return;
         }
@@ -34,8 +41,16 @@ module.exports = D.Widget.extend({
 
     ready: function() {
         this.assets.name.listenTo('click');
-        this.assets.name.on('dom.click', function () {
+        this.assets.name.on('dom.click', function() {
             this.setIsEdit(true);
+        }.bind(this));
+
+        this.assets.deleteAction.listenTo('click');
+        this.assets.deleteAction.on('dom.click', function() {
+            var id = this.get_id();
+            if (id) {
+                this.emit('delete', id);
+            }
         }.bind(this));
     }
 });

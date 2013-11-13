@@ -15,6 +15,27 @@ module.exports = boop.extend({
         });
 
         this._coll.on('all', this._onCollAll.bind(this))
+
+        this._addSync();
+    },
+
+    _addSync : function () {
+        var self = this;
+        this._coll.sync = function (method, collection, options) {
+            console.log('sync:', method, collection, options);
+            self['_sync_' + method].apply(self, arguments);
+        }
+    },
+
+    _sync_delete: function(method, model, options) {
+        var _db = this._db;
+        if(model.id) {
+            _db.get(model.id, function (err, doc) {
+                if(!err) {
+                    _db.remove(doc);
+                }
+            });
+        }
     },
 
     _onPouchChange: function(change) {
