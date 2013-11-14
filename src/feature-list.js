@@ -27,11 +27,14 @@ module.exports = Feature.extend({
 
     setRegion: function(value) {
         this.region = value;
+        return this;
     },
     setCollection: function(value) {
         this.collection = value;
+        return this;
     },
     setView: function(value) {
         this.view = value;
+        return this;
     }
 });

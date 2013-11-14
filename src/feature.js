@@ -4,6 +4,8 @@ var events = require('events');
 module.exports = B.extend({
     on : events.EventEmitter.prototype.on,
     off : events.EventEmitter.prototype.off,
+    addListener : events.EventEmitter.prototype.addListener,
+    removeListener : events.EventEmitter.prototype.removeListener,
     emit : events.EventEmitter.prototype.emit,
 
     initialize: function() {

@@ -12,20 +12,21 @@ var CollectionAdapter = require('./collection-adapter');
 BB.$ = $;
 
 
-var layoutView = D.fromJSON(['div', {'class':'well'}, [
-    ['Region', {'region':'main'}]
-]], {
+var layoutView = D.fromJSON(['div', {
+        'class': 'well'
+    },
+    [
+        ['Region', {
+            'region': 'main'
+        }]
+    ]
+], {
     'Region': Region
 });
 // var assets = D.utils.indexBy(layoutView, false, 'ui:asset');
 var regions = D.utils.indexBy(layoutView, false, 'region');
-var listView = new ListWidget();
-var formView = new FormWidget();
 
 // regions.main.show(listView);
-
-
-
 
 
 
@@ -35,52 +36,31 @@ var db,
 
 
 
+var FeatureEdit = require('./feature-edit');
+var featureEdit = new FeatureEdit();
+featureEdit
+    .setRegion(regions.main)
+    .setView(new FormWidget())
+    .start();
+
+
 var FeatureList = require('./feature-list');
 var featureList = new FeatureList();
-featureList.setRegion(regions.main);
-featureList.setView(listView);
-featureList.setCollection(itemCollection);
-featureList.start();
+featureList
+    .setRegion(regions.main)
+    .setView(new ListWidget())
+    .setCollection(itemCollection)
+    .start();
+
+var FeatureFakeData = require('./feature-fake-data');
+var featureFakeData = new FeatureFakeData();
 
 
 
-window.debug = {};
-window.debug.col = itemCollection;
-
-document.body.appendChild(layoutView.domify());
-
-async.series([
-
-    function(next) {
-        P.destroy('transactions', next);
-    },
-    function(next) {
-        db = new P('transactions');
-        collAdapter = new CollectionAdapter(db, itemCollection);
-        db.info(next);
-    },
-    function(next) {
-        db.bulkDocs({
-            docs: [{
-                type: 'item',
-                name: 'Alice Passport'
-            }, {
-                type: 'item',
-                name: 'Bob Passport'
-            }, {
-                type: 'item',
-                name: 'Alice Driving License'
-            }, {
-                type: 'item',
-                name: 'Bob Driving License'
-            }]
-        }, next);
-    }
-], function(err) {
-    if (!err) {
-        return;
-    }
-    console.log('Error:', err);
+P.destroy('transactions', function () {
+    db = new P('transactions');
+    collAdapter = new CollectionAdapter(db, itemCollection);
+    featureFakeData.setDb(db).start();
 });
 
 
@@ -99,13 +79,14 @@ router.on('all', function() {
 });
 
 router.on('route:itemDetails', function(id) {
-    console.log('route:itemDetails', id);
-    regions.main.show(formView);
+    featureEdit.start();
+    featureEdit.setId(id);
 });
 
 router.on('route:itemList', function() {
-    console.log('route:itemList');
     featureList.start();
 });
 
 BB.history.start();
+
+document.body.appendChild(layoutView.domify());
