@@ -40,31 +40,12 @@ module.exports = D.Widget.extend({
         ]);
     },
 
-    // applyAttribute_isEdit: function(value) {
-    //     if (value) {
-    //         this.assets.name.addClass('hidden');
-    //         this.assets.editName.removeClass('hidden');
-    //         return;
-    //     }
-    //     this.assets.editName.addClass('hidden');
-    //     this.assets.name.removeClass('hidden');
-    // },
-
     applyAttribute__id: function(value) {
         var href = '#items/' + value;
         this.assets.name.setAttribute('href', href);
     },
 
     ready: function() {
-        // this.assets.editName.listenTo('blur');
-        // this.assets.name.listenTo('click');
-        // this.assets.name.on('dom.click', function() {
-        //     this.setIsEdit(true);
-        // }.bind(this));
-        // this.assets.editName.on('dom.blur', function() {
-        //     this.setIsEdit(false);
-        // }.bind(this));
-
         this.assets.deleteAction.listenTo('click');
         this.assets.deleteAction.on('dom.click', function() {
             var id = this.get_id();
