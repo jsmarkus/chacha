@@ -9,10 +9,10 @@ var Region = require('./region');
 var async = require('async');
 var ItemCollection = require('./item-collection');
 var CollectionAdapter = require('./collection-adapter');
-var DualBackboneCollectionAdapter = require('dual/lib/adapter/BackboneCollection');
 BB.$ = $;
 
-var layoutView = D.fromJSON(['div', [
+
+var layoutView = D.fromJSON(['div', {'class':'well'}, [
     ['Region', {'region':'main'}]
 ]], {
     'Region': Region
@@ -22,20 +22,27 @@ var regions = D.utils.indexBy(layoutView, false, 'region');
 var listView = new ListWidget();
 var formView = new FormWidget();
 
-regions.main.show(listView);
+// regions.main.show(listView);
+
+
+
+
 
 
 var db,
     collAdapter,
     itemCollection = new ItemCollection();
 
-new DualBackboneCollectionAdapter(itemCollection, listView);
 
-listView.on('delete', function(id) {
-    itemCollection.get(id).destroy({
-        wait: true
-    });
-});
+
+var FeatureList = require('./feature-list');
+var featureList = new FeatureList();
+featureList.setRegion(regions.main);
+featureList.setView(listView);
+featureList.setCollection(itemCollection);
+featureList.start();
+
+
 
 window.debug = {};
 window.debug.col = itemCollection;
@@ -98,7 +105,7 @@ router.on('route:itemDetails', function(id) {
 
 router.on('route:itemList', function() {
     console.log('route:itemList');
-    regions.main.show(listView);
+    featureList.start();
 });
 
 BB.history.start();
