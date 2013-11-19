@@ -25,7 +25,7 @@ module.exports = Controller.extend({
                 name: 'Bob Driving License'
             }]
         }, function () {
-            self.trigger('ready');
+            self.emit('ready');
         });
     },
 

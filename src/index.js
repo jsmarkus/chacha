@@ -6,8 +6,9 @@ var P = require('./pouchdb');
 var ListWidget = require('./list-widget');
 var FormWidget = require('./form-widget');
 var Region = require('./region');
-var async = require('async');
+// var async = require('async');
 var ItemCollection = require('./item-collection');
+var ItemModel = require('./item-model');
 var CollectionAdapter = require('./collection-adapter');
 BB.$ = $;
 
@@ -41,6 +42,7 @@ var ctrEdit = new ControllerEdit();
 ctrEdit
     .setRegion(regions.main)
     .setView(new FormWidget())
+    .setModel(new ItemModel())
     .start();
 
 
@@ -56,11 +58,17 @@ var ControllerFakeData = require('./controller-fake-data');
 var ctrFakeData = new ControllerFakeData();
 
 
+ctrFakeData.on('ready', function() {
+    BB.history.start();
+});
 
-P.destroy('transactions', function () {
+
+
+P.destroy('transactions', function() {
     db = new P('transactions');
     collAdapter = new CollectionAdapter(db, itemCollection);
     ctrFakeData.setDb(db).start();
+    ctrEdit.model.setDb(db);
 });
 
 
@@ -87,6 +95,5 @@ router.on('route:itemList', function() {
     ctrList.start();
 });
 
-BB.history.start();
 
 document.body.appendChild(layoutView.domify());

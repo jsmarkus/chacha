@@ -1,12 +1,15 @@
 'use strict';
 var B = require('boop');
 var events = require('events');
+var eep = events.EventEmitter.prototype;
+
+
 module.exports = B.extend({
-    on : events.EventEmitter.prototype.on,
-    off : events.EventEmitter.prototype.off,
-    addListener : events.EventEmitter.prototype.addListener,
-    removeListener : events.EventEmitter.prototype.removeListener,
-    emit : events.EventEmitter.prototype.emit,
+    on : eep.on,
+    off : eep.off,
+    addListener : eep.addListener,
+    removeListener : eep.removeListener,
+    emit : eep.emit,
 
     initialize: function() {
         this.subscriptions = [];
@@ -15,17 +18,21 @@ module.exports = B.extend({
         this._neverStarted = true;
         this.ready();
     },
+    
     isNeverStarted: function () {
         return this._neverStarted;
     },
+    
     isStarted: function () {
         return this._started;
     },
+    
     ready: function() {
         //Something like that:
         // this.subscriptions.push(['view', 'itemClick', 'onViewItemClick']);
         // this.subscriptions.push(['model', 'reset', 'onModelReset']);
     },
+    
     _subscribe: function () {
         this._unsubscribe();
         var subs = this.subscriptions;
@@ -54,6 +61,7 @@ module.exports = B.extend({
         }
         this._activeHandlers = handlers;
     },
+    
     _unsubscribe: function () {
         var handlers = this._activeHandlers;
         for (var i = 0; i < handlers.length; i++) {
@@ -72,6 +80,7 @@ module.exports = B.extend({
         }
         this._activeHandlers = [];
     },
+    
     start: function() {
         this._subscribe();
         if(this.isNeverStarted()) {
@@ -81,6 +90,7 @@ module.exports = B.extend({
         this._started = true;
         this._neverStarted = false;
     },
+    
     stop: function() {
         this._unsubscribe();
         this.emit('stop');

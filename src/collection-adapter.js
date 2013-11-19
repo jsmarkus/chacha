@@ -22,7 +22,7 @@ module.exports = boop.extend({
     _addSync : function () {
         var self = this;
         this._coll.sync = function (method, collection, options) {
-            console.log('sync:', method, collection, options);
+            // console.log('sync:', method, collection, options);
             self['_sync_' + method].apply(self, arguments);
         }
     },

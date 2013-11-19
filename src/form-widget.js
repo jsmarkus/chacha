@@ -14,7 +14,7 @@ module.exports = D.Widget.extend({
                 ['input', {type:'text', 'ui:asset':'name'}],
             ]],
             ['p', [
-                ['input', {type:'submit', 'ui:asset':'submit'}]
+                ['button', {'ui:asset':'submit'}]
             ]]
         ]]);
     },
@@ -23,6 +23,19 @@ module.exports = D.Widget.extend({
         this.assets.name.setProperty('value', value);
     },
 
+    serialize: function() {
+        return {
+            _id : this.getAttribute('_id'),
+            name : this.assets.name.getProperty('value')
+        };
+    },
+
     ready: function() {
+        this.assets.submit.listenTo('click');
+        this.assets.submit.on('dom.click', function (e) {
+            e.preventDefault();
+            var data = this.serialize();
+            this.emit('submit', data);
+        }.bind(this));
     }
 });
