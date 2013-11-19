@@ -1,9 +1,9 @@
 'use strict';
-var Feature = require('./feature');
+var Controller = require('./controller');
 // var DualBackboneCollectionAdapter = require('dual/lib/adapter/BackboneCollection');
 
 
-module.exports = Feature.extend({
+module.exports = Controller.extend({
 
     ready: function() {
         // this.subscriptions.push(['view', 'delete', 'onViewDelete']);

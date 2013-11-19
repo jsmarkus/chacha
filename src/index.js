@@ -36,31 +36,31 @@ var db,
 
 
 
-var FeatureEdit = require('./feature-edit');
-var featureEdit = new FeatureEdit();
-featureEdit
+var ControllerEdit = require('./controller-edit');
+var ctrEdit = new ControllerEdit();
+ctrEdit
     .setRegion(regions.main)
     .setView(new FormWidget())
     .start();
 
 
-var FeatureList = require('./feature-list');
-var featureList = new FeatureList();
-featureList
+var ControllerList = require('./controller-list');
+var ctrList = new ControllerList();
+ctrList
     .setRegion(regions.main)
     .setView(new ListWidget())
     .setCollection(itemCollection)
     .start();
 
-var FeatureFakeData = require('./feature-fake-data');
-var featureFakeData = new FeatureFakeData();
+var ControllerFakeData = require('./controller-fake-data');
+var ctrFakeData = new ControllerFakeData();
 
 
 
 P.destroy('transactions', function () {
     db = new P('transactions');
     collAdapter = new CollectionAdapter(db, itemCollection);
-    featureFakeData.setDb(db).start();
+    ctrFakeData.setDb(db).start();
 });
 
 
@@ -79,12 +79,12 @@ router.on('all', function() {
 });
 
 router.on('route:itemDetails', function(id) {
-    featureEdit.start();
-    featureEdit.setId(id);
+    ctrEdit.start();
+    ctrEdit.setId(id);
 });
 
 router.on('route:itemList', function() {
-    featureList.start();
+    ctrList.start();
 });
 
 BB.history.start();

@@ -1,8 +1,8 @@
 'use strict';
-var Feature = require('./feature');
+var Controller = require('./controller');
 
 
-module.exports = Feature.extend({
+module.exports = Controller.extend({
 
     ready: function() {
         this.subscriptions.push(['this', 'firstStart', 'onFirstStart']);
